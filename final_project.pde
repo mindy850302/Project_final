@@ -2,6 +2,9 @@ boolean start = false;
 PImage background;
 PImage button;
 PImage backgroundStart;
+PImage bar;
+int score = 0;
+int time = 6000;
 
 Box[][] boxes;
 int rowOfBoxDisplay = 6 ;//宣告共有七列的球
@@ -13,6 +16,7 @@ void setup(){
   background = loadImage("background.png");
   button = loadImage("button.png");
   backgroundStart = loadImage("background_start.png");
+  bar = loadImage("bar.png");
   
   boxes = new Box[rowOfBoxDisplay][numOfBoxes];
   
@@ -41,7 +45,6 @@ void draw(){
       for(int i = 0; i<numOfBoxes;i++){
            boxes[j][i].changePosition();
            boxes[j][i].display();
-           
            print("ball x:"+boxes[j][i].x+"  , y:"+boxes[j][i].y+"\n");
        
       }
@@ -50,7 +53,44 @@ void draw(){
         updateBoxes(current);//renew the ball
       }
     }
-    
+    if(keyPressed == true){
+        for(int j = 0; j<rowOfBoxDisplay;j++){
+          for(int i = 0; i<numOfBoxes;i++){
+              if(key == 'a'){
+                  if(boxes[j][i].x==0 && boxes[j][i].y>=600 && boxes[j][i].y<= 710){
+                    boxes[j][i].on = false;
+                    score++;
+                  }
+              }
+              if(key == 's'){
+                  if(boxes[j][i].x==101 && boxes[j][i].y>=600 && boxes[j][i].y<= 710){
+                    boxes[j][i].on = false;
+                    score++;
+                  }
+              }
+              if(key == 'd'){
+                  if(boxes[j][i].x==202 && boxes[j][i].y>=600 && boxes[j][i].y<= 710){
+                    boxes[j][i].on = false;
+                    score++;
+                  }
+              } 
+              if(key == 'f'){
+                  if(boxes[j][i].x==303 && boxes[j][i].y>=600 && boxes[j][i].y<= 710){
+                    boxes[j][i].on = false;
+                    score++;
+                  }
+              } 
+          }
+        }
+        
+      }
+      noStroke();
+      image(bar,0,0,404,60);
+      fill(255);
+      textSize(20);
+      text(score,135,33);
+      time--;
+      text(time/100,350,33);
   }else{
     image(background,0,0,404,700);
     image(button,92,470,220,70);
