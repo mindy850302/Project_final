@@ -1,3 +1,13 @@
+import processing.serial.*;
+Serial port; // Create object from Serial class
+int val; // Data received from the serial port
+
+int val_1;
+int val_2;
+int val_3;
+int val_4;
+
+
 boolean start = false;
 boolean gameOver = false;
 PImage background;
@@ -33,9 +43,26 @@ void setup(){
       boxes[j][i].y = j*(-200);//每個Box的y
     }
    }
+   
+   println(Serial.list()); 
+   String portName = Serial.list()[1];
+   port = new Serial(this, portName, 9600);
 }
 
 void draw(){
+  
+  if (0 < port.available()) { // If data is available,
+  String inString = port.readStringUntil('\n');
+  inString = trim(inString);
+  println(inString);
+  val = Integer.parseInt(inString); // read it and store it in val
+  println(val);
+  val_1=val/1000;
+  //print(val_1);
+  val_2 =(val%1000)/100;
+  val_3=(val%100)/10;
+  val_4=(val%10);
+  }
   
   if(start){
     image(backgroundStart,0,0,404,700);
@@ -55,35 +82,35 @@ void draw(){
              start = false;
              gameOver = true;
            }
-           print("ball x:"+boxes[j][i].x+"  , y:"+boxes[j][i].y+"\n");
+           //print("ball x:"+boxes[j][i].x+"  , y:"+boxes[j][i].y+"\n");
       }
       if(boxes[j][numOfBoxes-1].y>=700){
         current=j;//記錄哪一層的方塊消失
         updateBoxes(current);//renew the ball
       }
     }
-    if(keyPressed == true){//消除方塊
+    //if(keyPressed == true){//消除方塊
         for(int j = 0; j<rowOfBoxDisplay;j++){
           for(int i = 0; i<numOfBoxes;i++){
-              if(key == 'a'){                
+              if(val_1 == 1){                
                   if(boxes[j][i].x==0 && boxes[j][i].y>=600 && boxes[j][i].y<= 710 && boxes[j][i].on ==true){
                     boxes[j][i].on = false;
                     score++;
                   }
               }
-              if(key == 's'){
+              if(val_2 == 1){
                   if(boxes[j][i].x==101 && boxes[j][i].y>=600 && boxes[j][i].y<= 710 && boxes[j][i].on ==true){
                     boxes[j][i].on = false;
                     score++;
                   }
               }
-              if(key == 'd'){
+              if(val_3 == 1){
                   if(boxes[j][i].x==202 && boxes[j][i].y>=600 && boxes[j][i].y<= 710 && boxes[j][i].on ==true){
                     boxes[j][i].on = false;
                     score++;
                   }
               } 
-              if(key == 'f'){
+              if(val_4 == 1){
                   if(boxes[j][i].x==303 && boxes[j][i].y>=600 && boxes[j][i].y<= 710 && boxes[j][i].on ==true){
                     boxes[j][i].on = false;
                     score++;
@@ -92,7 +119,7 @@ void draw(){
           }
         }
         
-      }
+      //}
       
       noStroke();
       image(bar,0,0,404,60);//show bar
