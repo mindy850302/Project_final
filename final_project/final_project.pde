@@ -1,4 +1,13 @@
 import processing.serial.*;
+
+import processing.sound.*;
+
+    SoundFile[] soundfile = new SoundFile[14];
+  
+    String mp3[] = new String[14];
+    String path[] = new String[14];
+
+    int state=0;
 Serial port; // Create object from Serial class
 int val; // Data received from the serial port
 
@@ -7,6 +16,25 @@ int val_2;
 int val_3;
 int val_4;
 
+String piano[] = {
+                  "4","-1","3","-1","4","1","-3","4","-1","3","-1","4","6","-3",
+                  "13","-1","6","-1","5","-1","4","13","-1","6","5","4","-1","4","-1","5","5","-3",
+                  "4","-1","3","-1","4","1","-3","4","-1","3","-1","4","8","-3",
+                  "13","13","13","13","13","6","5","13","-2",
+                  "5","6","13","6","6","6","6","5","4","6","-2",
+                  "2","-1","3","-1","4","-1","5","2","-2","2","3","4","5","4","8","-3",
+                  "4","5","6","13","8","-1","6","4","-1","8","-1","13","-1","5","-3",
+                  "13","-1","5","3","-1","13","-1","6","-1","4","-2",
+                  "2","-1","4","-1","13","-1","6","-1","8","4","-1",
+                  "6","13","6","13","6","13","6","4","5","-2",
+                  "4","5","6","13","8","-1","6","4","-1","8","-1","13","-1","5","-3",
+                  "13","-1","5","3","-1","13","-1","6","-1","4","-3",
+                  "2","14","8","13","6","13","8","-1","4","4","-2",
+                  "6","13","6","4","13","6","4","14","8","-2",
+                  "1","1","13","6","5","6","4","-3"
+                  };
+
+int piano_pointer;
 
 boolean start = false;
 boolean gameOver = false;
@@ -28,6 +56,42 @@ int count = 0;//算現在出現到第幾列的Box
 int current =0;
 void setup(){
   size(404,700);
+ 
+  for(int i=0;i<14;i++){
+    String filename=str(i+1)+".mp3";
+    println(filename);
+    mp3[i] = filename;
+    path[i] = sketchPath(mp3[i]);
+    soundfile[i] = new SoundFile(this,path[i]);
+  }
+  
+    int now=1;
+
+  for(int i=0;i<piano.length;i++){
+    delay(50);
+    soundfile[now-1].stop();
+    int delaytime=250;
+    int counts=0;
+     print(piano[i]);
+      now=Integer.parseInt(String.valueOf(piano[i]));
+      int next=1;
+     if(i!=piano.length-1){
+       next=Integer.parseInt(String.valueOf(piano[i+1]));
+       if(next<0 && next >-10){
+         counts=next*(-1);
+         delaytime=250+counts*200;
+         i++;
+       }
+       if(next==-10){
+         delaytime=230;
+         i++;
+         }
+     }
+     println(delaytime);
+     soundfile[now-1].play();
+     delay(delaytime);
+  }
+
   background = loadImage("background.png");
   button = loadImage("button.png");
   backgroundStart = loadImage("background_start.png");
@@ -55,8 +119,13 @@ void draw(){
   String inString = port.readStringUntil('\n');
   inString = trim(inString);
   println(inString);
-  val = Integer.parseInt(inString); // read it and store it in val
-  println(val);
+  if(inString==null||inString.equals("")){
+    val = 2222;
+  }else{
+    val = Integer.parseInt(inString); // read it and store it in val
+  }
+  //val = Integer.parseInt(inString); // read it and store it in val
+  //println(val);
   val_1=val/1000;
   //print(val_1);
   val_2 =(val%1000)/100;
